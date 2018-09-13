@@ -3,6 +3,7 @@ package io.patamon.kflow.core
 import io.patamon.kflow.node.End
 import io.patamon.kflow.node.Node
 import io.patamon.kflow.node.Start
+import io.patamon.kflow.node.TaskNode
 
 /**
  * Desc:
@@ -13,7 +14,6 @@ import io.patamon.kflow.node.Start
  */
 open class FlowContext {
 
-    private val nodeContext = NodeContext()
     val start = Start()
     val end = End()
 
@@ -29,8 +29,8 @@ open class FlowContext {
 
     }
 
-    operator fun String.invoke(init: NodeContext.() -> Unit) {
-        nodeContext.apply(init)
+    operator fun String.invoke(init: NodeContext.() -> Unit): Node {
+        return TaskNode(NodeContext().apply(init))
     }
 
 }

@@ -16,14 +16,15 @@ fun flow(init: FlowContext.() -> Unit): Flow {
 
 class Flow(context: FlowContext) {
 
+    fun execute() {
 
-
-
+    }
 
 }
 
 
 fun main(args: Array<String>) {
+
     val flow = flow {
         start to "node1"
         "node1" to end
@@ -35,6 +36,5 @@ fun main(args: Array<String>) {
         }
     }
 
-
-
+    flow.execute()
 }

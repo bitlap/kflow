@@ -9,19 +9,10 @@ package io.patamon.kflow.core
  */
 class NodeContext {
 
-    internal val handlerContext = HandlerContext()
-
-    fun handler(handler: () -> Unit = { }) {
-        handlerContext.handler = handler
-    }
-
-}
-
-class HandlerContext {
-
     internal var handler: () -> Unit = { }
 
-    internal fun handle() {
-        this.handler.invoke()
+    fun handler(handler: () -> Unit = { }) {
+        this.handler = handler
     }
+
 }
