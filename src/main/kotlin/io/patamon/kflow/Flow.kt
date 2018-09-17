@@ -14,7 +14,7 @@ fun flow(init: FlowContext.() -> Unit): Flow {
     return Flow(context)
 }
 
-class Flow(context: FlowContext) {
+class Flow(private val context: FlowContext) {
 
     fun execute() {
 
@@ -35,6 +35,7 @@ fun main(args: Array<String>) {
             }
         }
     }
+
 
     flow.execute()
 }

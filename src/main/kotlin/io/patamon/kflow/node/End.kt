@@ -7,7 +7,10 @@ package io.patamon.kflow.node
  * Created by IceMimosa
  * Date: 2018/9/12
  */
-class End : BaseNode() {
+class End(
+        override val name: String = "__END__"
+) : BaseNode() {
+
 
 
 }

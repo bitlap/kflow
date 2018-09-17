@@ -7,7 +7,12 @@ package io.patamon.kflow.node
  * Created by IceMimosa
  * Date: 2018/9/12
  */
-class Start : BaseNode() {
+class Start(
+        override val name: String = "__START__"
+) : BaseNode() {
+
+
+
 
 
 }

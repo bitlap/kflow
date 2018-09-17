@@ -9,7 +9,10 @@ import io.patamon.kflow.core.NodeContext
  * Created by IceMimosa
  * Date: 2018/9/13
  */
-class TaskNode(nodeContext: NodeContext) : BaseNode() {
+class TaskNode(
+        override val name: String,
+        private val nodeContext: NodeContext
+) : BaseNode() {
 
 
 

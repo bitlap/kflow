@@ -9,5 +9,6 @@ package io.patamon.kflow.node
  */
 interface Node {
 
+    val name: String
 
 }
