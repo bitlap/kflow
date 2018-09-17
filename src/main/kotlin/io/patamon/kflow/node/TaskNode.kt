@@ -9,7 +9,7 @@ import io.patamon.kflow.core.NodeContext
  * Created by IceMimosa
  * Date: 2018/9/13
  */
-class TaskNode(nodeContext: NodeContext) : Node {
+class TaskNode(nodeContext: NodeContext) : BaseNode() {
 
 
 
