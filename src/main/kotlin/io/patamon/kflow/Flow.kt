@@ -10,14 +10,13 @@ import io.patamon.kflow.core.FlowContext
  * Date: 2018/9/12
  */
 fun flow(init: FlowContext.() -> Unit): Flow {
-    val context = FlowContext().apply(init)
-    return Flow(context)
+    return Flow(FlowContext().initialize(init))
 }
 
 class Flow(private val context: FlowContext) {
 
     fun execute() {
-
+        context.exec()
     }
 
 }

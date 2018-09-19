@@ -38,4 +38,14 @@ open class FlowContext {
         return TaskNode(this, NodeContext().apply(init))
     }
 
+    internal fun initialize(init: FlowContext.() -> Unit): FlowContext {
+        this.apply(init)
+        // TODO
+        return this
+    }
+
+    internal fun exec() {
+
+    }
+
 }
