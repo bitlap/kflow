@@ -11,4 +11,12 @@ interface Node {
 
     val name: String
 
+    fun addNext(node: Node)
+    fun addPrev(node: Node)
+
+    fun next(): Collection<Node>
+
+    fun hasNext(): Boolean
+
+    fun execute()
 }

@@ -14,6 +14,12 @@ class TaskNode(
         private val nodeContext: NodeContext
 ) : BaseNode() {
 
+    companion object {
+        fun empty(name: String) = TaskNode(name, NodeContext())
+    }
 
+    override fun execute() {
+        nodeContext.handler.invoke()
+    }
 
 }

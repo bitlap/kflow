@@ -26,11 +26,18 @@ fun main(args: Array<String>) {
 
     val flow = flow {
         start to "node1"
-        "node1" to end
+        "node1" to "node2"
+        "node2" to end
 
         "node1" {
             handler {
                 println("node1 handle")
+            }
+        }
+
+        "node2" {
+            handler {
+                println("node2 handle")
             }
         }
     }
