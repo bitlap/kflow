@@ -9,7 +9,7 @@ package io.patamon.kflow.core
  */
 class NodeContext {
 
-    internal lateinit var handler: () -> Unit
+    internal var handler: () -> Unit = { }
 
     fun handler(handler: () -> Unit = { }) {
         this.handler = handler

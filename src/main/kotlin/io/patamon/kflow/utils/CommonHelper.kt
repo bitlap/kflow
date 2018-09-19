@@ -2,9 +2,9 @@ package io.patamon.kflow.utils
 
 
 /**
- * 新增元素
+ * add new kv
  *
- * @return 返回新添加的元素, 和 put 相反
+ * @return return the added value, opposite to [MutableMap.put]
  */
 internal fun <K, V> MutableMap<K, V>.add(k: K, v: V): V {
     this[k] = v
