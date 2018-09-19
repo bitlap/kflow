@@ -1,5 +1,7 @@
 package io.patamon.kflow.node
 
+import io.patamon.kflow.core.ExecuteContext
+
 /**
  * Desc:
  *
@@ -11,6 +13,14 @@ class End(
         override val name: String = "__END__"
 ) : BaseNode() {
 
+    override fun execute(context: ExecuteContext) {
+        // 1. check current join nodes
+        if (context.countDownJoinLocks(name)) {
+            return
+        }
 
+        // 2. release main thread
+        context.release()
+    }
 
 }

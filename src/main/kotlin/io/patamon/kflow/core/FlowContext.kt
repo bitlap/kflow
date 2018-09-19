@@ -19,9 +19,9 @@ open class FlowContext {
     val end = End()
 
     /**
-     * 存放 "nodeName" -> "nodeName" 连线关系
+     * 存放 ("nodeName" -> "nodeName") 连线关系
      */
-    private val lines = mutableMapOf<String, String>()
+    private val lines = mutableListOf<Pair<String, String>>()
 
     /**
      * 存放节点名称对应的节点对象
@@ -32,15 +32,15 @@ open class FlowContext {
     )
 
     infix fun Node.to(node: String) {
-        lines[this.name] = node
+        lines.add(Pair(this.name, node))
     }
 
     infix fun String.to(node: Node) {
-        lines[this] = node.name
+        lines.add(Pair(this, node.name))
     }
 
     infix fun String.to(node: String) {
-        lines[this] = node
+        lines.add(Pair(this, node))
     }
 
     operator fun String.invoke(init: NodeContext.() -> Unit): Node {
@@ -50,7 +50,7 @@ open class FlowContext {
     internal fun initialize(init: FlowContext.() -> Unit): FlowContext {
         this.apply(init)
         // init flow
-        lines.forEach { from, to ->
+        lines.forEach { (from, to) ->
             val fromNode = nodeMap[from] ?: nodeMap.add(from, TaskNode.empty(from))
             val toNode = nodeMap[to] ?: nodeMap.add(to, TaskNode.empty(to))
             fromNode.addNext(toNode)
@@ -65,9 +65,8 @@ open class FlowContext {
     }
 
     private fun exec(node: Node) {
-        node.execute()
-        if (node.hasNext()) {
-            node.next().forEach(::exec)
-        }
+        val context = ExecuteContext()
+        node.execute(context)
+        context.await()
     }
 }

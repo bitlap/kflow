@@ -1,5 +1,7 @@
 package io.patamon.kflow.node
 
+import io.patamon.kflow.core.ExecuteContext
+
 /**
  * Desc:
  *
@@ -15,8 +17,9 @@ interface Node {
     fun addPrev(node: Node)
 
     fun next(): Collection<Node>
+    fun prev(): Collection<Node>
 
     fun hasNext(): Boolean
 
-    fun execute()
+    fun execute(context: ExecuteContext)
 }

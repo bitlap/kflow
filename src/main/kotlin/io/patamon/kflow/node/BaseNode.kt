@@ -1,5 +1,8 @@
 package io.patamon.kflow.node
 
+import kotlinx.coroutines.experimental.GlobalScope
+import kotlinx.coroutines.experimental.launch
+
 /**
  * Desc:
  *
@@ -23,10 +26,14 @@ abstract class BaseNode : Node {
 
     override fun next(): Collection<Node> = nextNodes
 
+    override fun prev(): Collection<Node> = prevNodes
+
     override fun hasNext(): Boolean = this.nextNodes.isNotEmpty()
 
-    override fun execute() {
-        // default
+    protected fun executeAsync(func: () -> Unit) {
+        GlobalScope.launch {
+            func.invoke()
+        }
     }
 }
 
