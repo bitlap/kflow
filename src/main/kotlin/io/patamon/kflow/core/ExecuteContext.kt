@@ -5,25 +5,30 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.atomic.AtomicInteger
 
 /**
- * Desc: 执行上下文
- *
- * Mail: chk19940609@gmail.com
- * Created by IceMimosa
- * Date: 2018/9/19
+ * When one flow is executing, the only [ExecuteContext] will be through the whole process.
  */
 class ExecuteContext {
 
     private val mainLatch = CountDownLatch(1)
     private val joinLocks = ConcurrentHashMap<String, AtomicInteger>()
 
+    /**
+     * Block current execute thread
+     */
     fun await() {
         mainLatch.await()
     }
 
+    /**
+     * Release current execute thread
+     */
     fun release() {
         mainLatch.countDown()
     }
 
+    /**
+     * Init join node locks
+     */
     fun initJoinLocks(lock: Any, name: String, joinNum: Int) {
        synchronized(lock) {
            if (joinLocks.containsKey(name)) {
@@ -33,6 +38,9 @@ class ExecuteContext {
        }
     }
 
+    /**
+     * Count down join node locks
+     */
     fun countDownJoinLocks(name: String): Boolean {
         if (!joinLocks.containsKey(name)) {
             return false

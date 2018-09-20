@@ -5,11 +5,7 @@ import io.patamon.kflow.core.NodeContext
 import io.patamon.kflow.node.NodeType.TASK
 
 /**
- * Desc:
- *
- * Mail: chk19940609@gmail.com
- * Created by IceMimosa
- * Date: 2018/9/13
+ * Task node defined by user
  */
 class TaskNode(
         override val name: String,

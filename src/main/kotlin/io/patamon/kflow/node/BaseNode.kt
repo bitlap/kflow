@@ -9,14 +9,9 @@ import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.launch
 
 /**
- * Desc:
- *
- * Mail: chk19940609@gmail.com
- * Created by IceMimosa
- * Date: 2018/9/17
+ * Base abstract node
  */
 abstract class BaseNode : Node {
-
 
     protected val nextNodes = mutableSetOf<Node>()
     protected val prevNodes = mutableSetOf<Node>()

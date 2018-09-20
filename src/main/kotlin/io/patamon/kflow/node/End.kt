@@ -4,11 +4,7 @@ import io.patamon.kflow.core.ExecuteContext
 import io.patamon.kflow.node.NodeType.END
 
 /**
- * Desc:
- *
- * Mail: chk19940609@gmail.com
- * Created by IceMimosa
- * Date: 2018/9/12
+ * Built-in end node
  */
 class End(
         override val name: String = "__END__",

@@ -7,24 +7,23 @@ import io.patamon.kflow.node.TaskNode
 import io.patamon.kflow.utils.add
 
 /**
- * Desc:
- *
- * Mail: chk19940609@gmail.com
- * Created by IceMimosa
- * Date: 2018/9/12
+ * A flow instance context
  */
 open class FlowContext {
 
+    /**
+     * [start] and [end] node init
+     */
     val start = Start()
     val end = End()
 
     /**
-     * 存放 ("nodeName" -> "nodeName") 连线关系
+     * ("nodeName" -> "nodeName") relations
      */
     private val lines = mutableListOf<Pair<String, String>>()
 
     /**
-     * 存放节点名称对应的节点对象
+     * "node" -> [Node]
      */
     private val nodeMap = mutableMapOf<String, Node>(
             Pair(this.start.name, this.start),
@@ -43,11 +42,14 @@ open class FlowContext {
         }
         // check cycle
         if (start.checkCycle()) {
-            throw IllegalStateException("The flow has cycle, please check it !!!")
+            throw KFlowException("The flow has cycle, please check it !!!")
         }
         return this
     }
 
+    /**
+     * execute current flow
+     */
     internal fun exec() {
         exec(this.start)
     }
@@ -68,6 +70,10 @@ open class FlowContext {
 
     infix fun String.to(node: String) {
         lines.add(Pair(this, node))
+    }
+
+    infix fun Node.to(node: Node) {
+        lines.add(Pair(this.name, node.name))
     }
 
     operator fun String.invoke(init: NodeContext.() -> Unit): Node {

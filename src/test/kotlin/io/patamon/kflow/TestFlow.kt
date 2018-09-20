@@ -7,6 +7,9 @@ import org.junit.Test
  */
 class TestFlow {
 
+    /**
+     * start ---> node1 ---> node2 ---> end
+     */
     @Test
     fun testSimpleFlow() {
         val flow = flow {
@@ -29,12 +32,17 @@ class TestFlow {
         flow.execute()
     }
 
+    /**
+     * start ---> node1 ---> end
+     *   |___________________↑
+     */
     @Test
     fun testSimpleFlow2() {
         val flow = flow {
-            start to end
             start to "node1"
             "node1" to end
+
+            start to end
 
             "node1" {
                 handler {
@@ -46,23 +54,30 @@ class TestFlow {
         flow.execute()
     }
 
+    /**
+     * start ---> node1 ------> node2 ---> node3 ----> end
+     *              |                                  ↑
+     *              |       |-----> f_node1 ---        |
+     *              |---> f_node              |---> j_node
+     *                      |-----> f_node2 ---
+     */
     @Test
     fun testForkJoinFlow() {
         val flow = flow {
             start to "node1"
-            "node1" to "f1_node1"
-            "node1" to "f2_node1"
+            "node1" to "node2"
+            "node1" to "f_node"
 
-            "f1_node1" to "f1_node2"
-            "f1_node2" to end
+            "node2" to "node3"
+            "node3" to end
 
-            "f2_node1" to "ff1_node1"
-            "f2_node1" to "ff1_node2"
+            "f_node" to "f_node1"
+            "f_node" to "f_node2"
 
-            "ff1_node1" to "jj1_node"
-            "ff1_node2" to "jj1_node"
+            "f_node1" to "j_node"
+            "f_node2" to "j_node"
 
-            "jj1_node" to end
+            "j_node" to end
 
             "node1" {
                 handler {
@@ -70,40 +85,40 @@ class TestFlow {
                 }
             }
 
-            "f1_node1" {
+            "node2" {
                 handler {
                     Thread.sleep(1000)
-                    println("${Thread.currentThread().name} -> f1_node1 handle")
+                    println("${Thread.currentThread().name} -> node2 handle")
                 }
             }
 
-            "f1_node2" {
+            "node3" {
                 handler {
-                    println("${Thread.currentThread().name} -> f1_node2 handle")
+                    println("${Thread.currentThread().name} -> node3 handle")
                 }
             }
 
-            "f2_node1" {
+            "f_node" {
                 handler {
-                    println("${Thread.currentThread().name} -> f2_node1 handle")
+                    println("${Thread.currentThread().name} -> f_node handle")
                 }
             }
 
-            "ff1_node1" {
+            "f_node1" {
                 handler {
-                    println("${Thread.currentThread().name} -> ff1_node1 handle")
+                    println("${Thread.currentThread().name} -> f_node1 handle")
                 }
             }
 
-            "ff1_node2" {
+            "f_node2" {
                 handler {
-                    println("${Thread.currentThread().name} -> ff1_node2 handle")
+                    println("${Thread.currentThread().name} -> f_node2 handle")
                 }
             }
 
-            "jj1_node" {
+            "j_node" {
                 handler {
-                    println("${Thread.currentThread().name} -> jj1_node handle")
+                    println("${Thread.currentThread().name} -> j_node handle")
                 }
             }
         }

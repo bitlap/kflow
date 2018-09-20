@@ -1,8 +1,7 @@
 package io.patamon.kflow
 
+import io.patamon.kflow.core.KFlowException
 import org.junit.Test
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 /**
  * Desc: Check DAG cycle
@@ -10,29 +9,30 @@ import kotlin.test.assertTrue
 class TestCheckCycle {
 
     /**
-     * 无环
+     * no cycle
+     *
      * start ---> node1 ---> end
      *   |___________________↑
      */
     @Test
     fun test_0() {
-        val f = flow {
+        flow {
             start to "node1"
             "node1" to end
 
             start to end
         }
-        assertFalse(f.getStartNode().checkCycle())
     }
 
     /**
-     * 无环
+     * no cycle
+     *
      * start ---> node1 ---> node2 ---> node3 ---> end
      *                         |___________________↑
      */
     @Test
     fun test_1() {
-        val f = flow {
+        flow {
             start to "node1"
             "node1" to "node2"
             "node2" to "node3"
@@ -40,18 +40,18 @@ class TestCheckCycle {
 
             "node2" to end
         }
-        assertFalse(f.getStartNode().checkCycle())
     }
 
     /**
-     * 有环
+     * has cycle
+     *
      *              ↓ˉˉˉˉˉˉˉˉˉˉˉˉˉˉˉˉˉˉˉˉˉ|
      * start ---> node1 ---> node2 ---> node3 ---> end
      *                         |___________________↑
      */
-    @Test
+    @Test(expected = KFlowException::class)
     fun test_2() {
-        val f = flow {
+        flow {
             start to "node1"
             "node1" to "node2"
             "node2" to "node3"
@@ -60,11 +60,10 @@ class TestCheckCycle {
             "node3" to "node1"
             "node2" to end
         }
-        assertTrue(f.getStartNode().checkCycle())
     }
 
     /**
-     * 无环
+     * no cycle
      *
      * start --->  node1 ---> node2 ---> node3 ---->  end
      *              |                                  ↑
@@ -74,7 +73,7 @@ class TestCheckCycle {
      */
     @Test
     fun test_3() {
-        val f = flow {
+        flow {
             start to "node1"
             "node1" to "node2"
             "node2" to "node3"
@@ -89,6 +88,49 @@ class TestCheckCycle {
 
             "j_node" to end
         }
-        assertFalse(f.getStartNode().checkCycle())
     }
-}
+
+
+    /**
+     * no cycle
+     *
+     *               |-----> f_node1 ---        |-----> fj_node1 ---
+     * start ---> f_node               |---> fj_node               |---> j_node ---> end
+     *               |-----> f_node2 ---        |-----> fj_node2 ---
+     *
+     *
+     *
+     */
+    @Test
+    fun test_4() {
+        flow {
+            // fork/join
+            start to "f_node"
+            "f_node" to "f_node1"
+            "f_node" to "f_node2"
+            "f_node1" to "fj_node"
+            "f_node2" to "fj_node"
+            // fork/join
+            "fj_node" to "fj_node1"
+            "fj_node" to "fj_node2"
+            "fj_node1" to "j_node"
+            "fj_node2" to "j_node"
+
+            "j_node" to end
+        }
+    }
+
+    /**
+     * has cycle
+     *
+     * start ---> node1 ---> end
+     *   ↑___________________|
+     */
+    @Test(expected = KFlowException::class)
+    fun test_5() {
+        flow {
+            start to "node1"
+            "node1" to end
+            end to start
+        }
+    }}
