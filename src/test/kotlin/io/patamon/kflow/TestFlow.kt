@@ -16,13 +16,30 @@ class TestFlow {
 
             "node1" {
                 handler {
-                    println("node1 handle")
+                    println("${Thread.currentThread().name} -> node1 handle")
                 }
             }
 
             "node2" {
                 handler {
-                    println("node2 handle")
+                    println("${Thread.currentThread().name} -> node2 handle")
+                }
+            }
+        }
+        flow.execute()
+    }
+
+    @Test
+    fun testSimpleFlow2() {
+        val flow = flow {
+            start to end
+            start to "node1"
+            "node1" to end
+
+            "node1" {
+                handler {
+                    Thread.sleep(1000)
+                    println("${Thread.currentThread().name} -> node1 handle")
                 }
             }
         }
@@ -49,44 +66,44 @@ class TestFlow {
 
             "node1" {
                 handler {
-                    println("node1 handle")
+                    println("${Thread.currentThread().name} -> node1 handle")
                 }
             }
 
             "f1_node1" {
                 handler {
                     Thread.sleep(1000)
-                    println("f1_node1 handle")
+                    println("${Thread.currentThread().name} -> f1_node1 handle")
                 }
             }
 
             "f1_node2" {
                 handler {
-                    println("f1_node2 handle")
+                    println("${Thread.currentThread().name} -> f1_node2 handle")
                 }
             }
 
             "f2_node1" {
                 handler {
-                    println("f2_node1 handle")
+                    println("${Thread.currentThread().name} -> f2_node1 handle")
                 }
             }
 
             "ff1_node1" {
                 handler {
-                    println("ff1_node1 handle")
+                    println("${Thread.currentThread().name} -> ff1_node1 handle")
                 }
             }
 
             "ff1_node2" {
                 handler {
-                    println("ff1_node2 handle")
+                    println("${Thread.currentThread().name} -> ff1_node2 handle")
                 }
             }
 
             "jj1_node" {
                 handler {
-                    println("jj1_node handle")
+                    println("${Thread.currentThread().name} -> jj1_node handle")
                 }
             }
         }

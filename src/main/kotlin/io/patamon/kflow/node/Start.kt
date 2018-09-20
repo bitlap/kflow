@@ -16,7 +16,7 @@ class Start(
     override fun execute(context: ExecuteContext) {
         nextNodes.forEach {
             if (it.prev().size > 1) {
-                context.initJoinLocks(it.name, it.prev().size)
+                context.initJoinLocks(this, it.name, it.prev().size)
             }
             executeAsync {
                 it.execute(context)

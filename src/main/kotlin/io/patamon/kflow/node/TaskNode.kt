@@ -30,7 +30,7 @@ class TaskNode(
         // 3. execute next nodes
         nextNodes.forEach {
             if (it.prev().size > 1) {
-                context.initJoinLocks(it.name, it.prev().size)
+                context.initJoinLocks(this, it.name, it.prev().size)
             }
             executeAsync {
                 it.execute(context)

@@ -24,8 +24,8 @@ class ExecuteContext {
         mainLatch.countDown()
     }
 
-    fun initJoinLocks(name: String, joinNum: Int) {
-       synchronized(this) {
+    fun initJoinLocks(lock: Any, name: String, joinNum: Int) {
+       synchronized(lock) {
            if (joinLocks.containsKey(name)) {
                return
            }
@@ -34,16 +34,14 @@ class ExecuteContext {
     }
 
     fun countDownJoinLocks(name: String): Boolean {
-        synchronized(this) {
-            if (!joinLocks.containsKey(name)) {
-                return false
-            }
-            if (joinLocks[name]!!.get() == 0) {
-                joinLocks.remove(name)
-                return false
-            }
-            return joinLocks[name]!!.decrementAndGet() > 0
+        if (!joinLocks.containsKey(name)) {
+            return false
         }
+        if (joinLocks[name]!!.get() == 0) {
+            joinLocks.remove(name)
+            return false
+        }
+        return joinLocks[name]!!.decrementAndGet() > 0
     }
 
 }
