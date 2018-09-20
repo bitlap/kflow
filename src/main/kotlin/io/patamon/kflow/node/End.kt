@@ -1,6 +1,7 @@
 package io.patamon.kflow.node
 
 import io.patamon.kflow.core.ExecuteContext
+import io.patamon.kflow.node.NodeType.END
 
 /**
  * Desc:
@@ -10,7 +11,8 @@ import io.patamon.kflow.core.ExecuteContext
  * Date: 2018/9/12
  */
 class End(
-        override val name: String = "__END__"
+        override val name: String = "__END__",
+        override var type: NodeType = END
 ) : BaseNode() {
 
     override fun execute(context: ExecuteContext) {

@@ -19,4 +19,7 @@ class Flow(private val context: FlowContext) {
         context.exec()
     }
 
+    fun getStartNode() = context.start
+
+    fun getEndNode() = context.end
 }

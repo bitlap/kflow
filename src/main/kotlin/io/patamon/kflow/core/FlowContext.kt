@@ -27,9 +27,36 @@ open class FlowContext {
      * 存放节点名称对应的节点对象
      */
     private val nodeMap = mutableMapOf<String, Node>(
-            Pair(start.name, start),
-            Pair(end.name, end)
+            Pair(this.start.name, this.start),
+            Pair(this.end.name, this.end)
     )
+
+
+    internal fun initialize(init: FlowContext.() -> Unit): FlowContext {
+        this.apply(init)
+        // init flow
+        lines.forEach { (from, to) ->
+            val fromNode = nodeMap[from] ?: nodeMap.add(from, TaskNode.empty(from))
+            val toNode = nodeMap[to] ?: nodeMap.add(to, TaskNode.empty(to))
+            fromNode.addNext(toNode)
+            toNode.addPrev(fromNode)
+        }
+        // check cycle
+        if (start.checkCycle()) {
+            throw IllegalStateException("The flow has cycle, please check it !!!")
+        }
+        return this
+    }
+
+    internal fun exec() {
+        exec(this.start)
+    }
+
+    private fun exec(node: Node) {
+        val context = ExecuteContext()
+        node.execute(context)
+        context.await()
+    }
 
     infix fun Node.to(node: String) {
         lines.add(Pair(this.name, node))
@@ -47,26 +74,4 @@ open class FlowContext {
         return nodeMap.add(this, TaskNode(this, NodeContext().apply(init)))
     }
 
-    internal fun initialize(init: FlowContext.() -> Unit): FlowContext {
-        this.apply(init)
-        // init flow
-        lines.forEach { (from, to) ->
-            val fromNode = nodeMap[from] ?: nodeMap.add(from, TaskNode.empty(from))
-            val toNode = nodeMap[to] ?: nodeMap.add(to, TaskNode.empty(to))
-            fromNode.addNext(toNode)
-            toNode.addPrev(fromNode)
-        }
-        // TODO: check cycle
-        return this
-    }
-
-    internal fun exec() {
-        exec(start)
-    }
-
-    private fun exec(node: Node) {
-        val context = ExecuteContext()
-        node.execute(context)
-        context.await()
-    }
 }

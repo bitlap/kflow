@@ -12,6 +12,7 @@ import io.patamon.kflow.core.ExecuteContext
 interface Node {
 
     val name: String
+    var type: NodeType
 
     fun addNext(node: Node)
     fun addPrev(node: Node)
@@ -22,4 +23,6 @@ interface Node {
     fun hasNext(): Boolean
 
     fun execute(context: ExecuteContext)
+
+    fun checkCycle(): Boolean
 }
