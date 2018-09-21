@@ -20,7 +20,7 @@ class TestFlow {
             "node1" {
                 handler { flowData ->
                     flowData["node1"] = "node1Data"
-                    println("${Thread.currentThread().name} -> node1 handle")
+                    println("${Thread.currentThread().name} -> node1 handle, get init data ${flowData["initData"]}")
                 }
             }
 
@@ -30,7 +30,8 @@ class TestFlow {
                 }
             }
         }
-        flow.execute()
+        // flow.execute()
+        flow.execute(mutableMapOf("initData" to "initData"))
     }
 
     /**

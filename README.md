@@ -47,6 +47,5 @@ You can reference test case.
 
 ## 2. TODO
 
-* [ ] `Execute context` user defined params.
 * [ ] `Execute context` other build-in features.
 * [ ] TODO

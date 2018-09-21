@@ -7,11 +7,17 @@ import java.util.concurrent.atomic.AtomicInteger
 /**
  * When one flow is executing, the only [ExecuteContext] will be through the whole process.
  */
-class ExecuteContext {
+class ExecuteContext(
+        flowData: Map<String, Any?> = mutableMapOf()
+) {
 
     private val mainLatch = CountDownLatch(1)
     private val joinLocks = ConcurrentHashMap<String, AtomicInteger>()
     internal val flowData = ConcurrentHashMap<String, Any?>()
+
+    init {
+        this.flowData.putAll(flowData)
+    }
 
     /**
      * Block current execute thread

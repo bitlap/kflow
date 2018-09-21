@@ -50,12 +50,12 @@ open class FlowContext {
     /**
      * execute current flow
      */
-    internal fun exec() {
-        exec(this.start)
+    internal fun exec(flowData: Map<String, Any?>) {
+        exec(this.start, flowData)
     }
 
-    private fun exec(node: Node) {
-        val context = ExecuteContext()
+    private fun exec(node: Node, flowData: Map<String, Any?>) {
+        val context = ExecuteContext(flowData)
         node.execute(context)
         context.await()
     }

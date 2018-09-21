@@ -17,8 +17,8 @@ class Flow(private val context: FlowContext) {
     /**
      * execute current flow
      */
-    fun execute() {
-        context.exec()
+    fun execute(initFlowData: Map<String, Any?> = mutableMapOf()) {
+        context.exec(initFlowData)
     }
 
     /**
