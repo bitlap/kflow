@@ -4,7 +4,7 @@ Kotlin DSL for DAG-Flow execute engine.
 
 ## 1. Examples
 
-* Simple example
+* Quick start
 
 ```kotlin
 // start ---> node1 ---> node2 ---> end
