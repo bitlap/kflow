@@ -16,13 +16,15 @@ val flow = flow {
 
     // node handler
     "node1" {
-        handler {
+        handler { flowData ->
+            flowData["node1"] = "node1Data"
             println("${Thread.currentThread().name} -> node1 handle")
         }
     }
+
     "node2" {
-        handler {
-            println("${Thread.currentThread().name} -> node2 handle")
+        handler { flowData ->
+            println("${Thread.currentThread().name} -> node2 handle, get node1 data ${flowData["node1"]}")
         }
     }
 }
