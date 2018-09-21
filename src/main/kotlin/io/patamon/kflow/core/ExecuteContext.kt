@@ -11,6 +11,7 @@ class ExecuteContext {
 
     private val mainLatch = CountDownLatch(1)
     private val joinLocks = ConcurrentHashMap<String, AtomicInteger>()
+    internal val flowData = ConcurrentHashMap<String, Any?>()
 
     /**
      * Block current execute thread

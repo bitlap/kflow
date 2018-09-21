@@ -23,7 +23,7 @@ class TaskNode(
             return
         }
         // 2. execute node
-        nodeContext.handler.invoke()
+        nodeContext.handler.invoke(context.flowData)
 
         // 3. execute next nodes
         nextNodes.forEach {
