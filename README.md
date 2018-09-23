@@ -43,7 +43,7 @@ flow.execute()
  */
 ```
 
-You can reference test case.
+You can reference to test cases.
 
 ## 2. TODO
 
