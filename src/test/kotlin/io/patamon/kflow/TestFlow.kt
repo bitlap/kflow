@@ -2,6 +2,7 @@ package io.patamon.kflow
 
 import io.patamon.kflow.core.KFlowException
 import org.junit.Test
+import java.util.concurrent.CountDownLatch
 
 /**
  * Test simple flow
@@ -139,4 +140,41 @@ class TestFlow {
             "node1" to end
         }
     }
+
+    /**
+     * check start has prev exception
+     */
+    @Test(expected = KFlowException::class)
+    fun testStartHasPrevException() {
+        flow {
+            "node1" to start
+        }
+    }
+
+    /**
+     * check end has next exception
+     */
+    @Test(expected = KFlowException::class)
+    fun testEndHasNexException() {
+        flow {
+            end to "node1"
+        }
+    }
+
+    /**
+     * check none prev and none next
+     */
+    @Test(expected = KFlowException::class)
+    fun testNonePrevException() {
+        flow {
+            "node1" to end
+        }
+    }
+    @Test(expected = KFlowException::class)
+    fun testNoneNextException() {
+        flow {
+            start to "node1"
+        }
+    }
+
 }

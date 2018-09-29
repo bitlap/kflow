@@ -2,6 +2,8 @@ package io.patamon.kflow.core
 
 import io.patamon.kflow.node.End
 import io.patamon.kflow.node.Node
+import io.patamon.kflow.node.NodeType.END
+import io.patamon.kflow.node.NodeType.START
 import io.patamon.kflow.node.Start
 import io.patamon.kflow.node.TaskNode
 import io.patamon.kflow.utils.add
@@ -35,11 +37,21 @@ open class FlowContext {
         this.apply(init)
         // init flow
         lines.forEach { (from, to) ->
+            // if node has no body, use default empty body
             val fromNode = nodeMap[from] ?: nodeMap.add(from, TaskNode.empty(from))
             val toNode = nodeMap[to] ?: nodeMap.add(to, TaskNode.empty(to))
             fromNode.addNext(toNode)
             toNode.addPrev(fromNode)
         }
+        // check `none prev` and `none next`
+        nodeMap.values.forEach {
+            when {
+                it.type == START || it.type == END -> Unit
+                it.prev().isEmpty() -> throw KFlowException("[${it.name}] must have prev nodes.")
+                it.next().isEmpty() -> throw KFlowException("[${it.name}] must have next nodes.")
+            }
+        }
+
         // check cycle
         if (start.checkCycle()) {
             throw KFlowException("The flow has cycle, please check it !!!")

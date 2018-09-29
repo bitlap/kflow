@@ -13,9 +13,15 @@ import kotlinx.coroutines.experimental.launch
  */
 abstract class BaseNode : Node {
 
-    protected val nextNodes = mutableSetOf<Node>()
+    /**
+     * prev nodes and next nodes
+     */
     protected val prevNodes = mutableSetOf<Node>()
+    protected val nextNodes = mutableSetOf<Node>()
 
+    /**
+     * add next node
+     */
     override fun addNext(node: Node) {
         this.nextNodes.add(node)
         when {
@@ -24,6 +30,9 @@ abstract class BaseNode : Node {
         }
     }
 
+    /**
+     * add prev node
+     */
     override fun addPrev(node: Node) {
         this.prevNodes.add(node)
         when {
@@ -38,6 +47,9 @@ abstract class BaseNode : Node {
 
     override fun hasNext(): Boolean = this.nextNodes.isNotEmpty()
 
+    /**
+     * check flow if has circular dependencies, using DFS(Depth First Search)
+     */
     override fun checkCycle(): Boolean {
         return hasCycle(DAGNode(this, INIT), mutableListOf(), mutableMapOf())
     }
@@ -49,13 +61,17 @@ abstract class BaseNode : Node {
         walking.add(dagNode.node.name)
         for (it in dagNode.node.next()) {
             if ((visited[it.name] == null || visited[it.name]!!.status == INIT)
+                    // if cycle, return true
                     && hasCycle(DAGNode(it, INIT), walking, visited)) {
                 return true
             }
         }
+        // Remove current node
+        walking.remove(dagNode.node.name)
+        // And add to visited map
         dagNode.status = VISITED
         visited[dagNode.node.name] = dagNode
-        walking.remove(dagNode.node.name)
+
         return false
     }
 
@@ -66,12 +82,63 @@ abstract class BaseNode : Node {
     }
 }
 
+/**
+ * Node type
+ */
 enum class NodeType {
-    START, END, FORK, JOIN, FORK_JOIN, TASK
+    /**
+     * START, no prev
+     */
+    START,
+
+    /**
+     * END, no next
+     */
+    END,
+
+    /**
+     * Common task node
+     */
+    TASK,
+
+    /**
+     * TASK node with multiple next nodes
+     */
+    FORK,
+
+    /**
+     * TASK node with multiple prev nodes
+     */
+    JOIN,
+
+    /**
+     * TASK node with multiple prev nodes, multiple next nodes
+     */
+    FORK_JOIN
 }
 
+/**
+ * Simple dag node object, using by checking circular dependencies
+ */
 data class DAGNode(val node: Node, var status: WalkStatus)
 
+/**
+ * Checking circular dependencies status
+ */
 enum class WalkStatus {
-    INIT, VISITING, VISITED
+
+    /**
+     * Current node is initial
+     */
+    INIT,
+
+    /**
+     * Current node is visiting
+     */
+    VISITING,
+
+    /**
+     * Current node has been visited
+     */
+    VISITED
 }

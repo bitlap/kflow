@@ -3,6 +3,7 @@ package io.patamon.kflow.node
 import io.patamon.kflow.core.ExecuteContext
 import io.patamon.kflow.core.NodeContext
 import io.patamon.kflow.node.NodeType.TASK
+import io.patamon.kflow.utils.moreThanOne
 
 /**
  * Task node defined by user
@@ -27,7 +28,7 @@ class TaskNode(
 
         // 3. execute next nodes
         nextNodes.forEach {
-            if (it.type == NodeType.JOIN || it.type == NodeType.FORK_JOIN) {
+            if (it.prev().moreThanOne()) {
                 context.initJoinLocks(this, it.name, it.prev().size)
             }
             executeAsync {
