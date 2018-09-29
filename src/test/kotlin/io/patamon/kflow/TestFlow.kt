@@ -1,5 +1,6 @@
 package io.patamon.kflow
 
+import io.patamon.kflow.core.KFlowException
 import org.junit.Test
 
 /**
@@ -125,5 +126,17 @@ class TestFlow {
             }
         }
         flow.execute()
+    }
+
+    /**
+     * check `relationship already exists` exception
+     */
+    @Test(expected = KFlowException::class)
+    fun testLineRelationExistsException() {
+        flow {
+            start to "node1"
+            start to "node1" // Repetition relation
+            "node1" to end
+        }
     }
 }
