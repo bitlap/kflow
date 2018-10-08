@@ -1,5 +1,6 @@
 package io.patamon.kflow
 
+import io.patamon.kflow.core.KFlowException
 import org.junit.Test
 
 /**
@@ -11,7 +12,7 @@ class TestFlowWithError {
     /**
      * start ---> node1 ---> node2 ---> end
      */
-    @Test
+    @Test(expected = KFlowException::class)
     fun testSimpleFlow() {
         val flow = flow {
             start to "node1"
@@ -82,9 +83,10 @@ class TestFlowWithError {
             }
 
             "f_node" {
-                handler {
-                    // error
-                    1 / 0
+                handler { flowData ->
+                    // throw error
+                    if (flowData["error"] as Boolean) 1 / 0
+
                     println("${Thread.currentThread().name} -> f_node handle")
                 }
             }
@@ -107,7 +109,12 @@ class TestFlowWithError {
                 }
             }
         }
-        flow.execute()
+        try {
+            flow.execute(mutableMapOf("error" to true))
+        } catch (e: Exception) {
+            // ignore
+        }
+        flow.execute(mutableMapOf("error" to false))
     }
 
 }
