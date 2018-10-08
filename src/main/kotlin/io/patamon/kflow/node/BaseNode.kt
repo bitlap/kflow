@@ -7,7 +7,7 @@ import io.patamon.kflow.node.NodeType.JOIN
 import io.patamon.kflow.node.WalkStatus.INIT
 import io.patamon.kflow.node.WalkStatus.VISITED
 import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.cancelChildren
+import kotlinx.coroutines.experimental.isActive
 import kotlinx.coroutines.experimental.launch
 
 /**
@@ -79,12 +79,13 @@ abstract class BaseNode : Node {
 
     protected fun executeAsync(context: ExecuteContext, node: Node) {
         GlobalScope.launch {
-            val result = node.execute(context)
-            if (result.hasError()) {
-                this.coroutineContext.cancelChildren(result.exception)
+            if (isActive && context.isActive()) {
+                val result = node.execute(context)
+                if (result.hasError()) {
+                    context.release(result.exception!!)
+                }
             }
         }
-
     }
 }
 

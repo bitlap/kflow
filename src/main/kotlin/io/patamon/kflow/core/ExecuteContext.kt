@@ -8,14 +8,30 @@ import java.util.concurrent.atomic.AtomicInteger
  * When one flow is executing, the only [ExecuteContext] will be through the whole process.
  */
 class ExecuteContext(
-        flowData: Map<String, Any?> = mutableMapOf(),
-        private val mainThread: Thread = Thread.currentThread()
+        flowData: Map<String, Any?> = mutableMapOf()
 ) {
 
+    /**
+     * main thread [CountDownLatch]
+     */
     private val mainLatch = CountDownLatch(1)
+
+    /**
+     * join node locks
+     */
     private val joinLocks = ConcurrentHashMap<String, AtomicInteger>()
+
+    /**
+     * when handler get exception, it will not be null
+     */
+    private var handlerException: Exception? = null
+
+    /**
+     * handler execute flow data
+     */
     internal val flowData = ConcurrentHashMap<String, Any?>()
 
+    // init code
     init {
         this.flowData.putAll(flowData)
     }
@@ -25,14 +41,23 @@ class ExecuteContext(
      */
     fun await() {
         mainLatch.await()
+        if (handlerException != null) {
+            throw KFlowException(handlerException!!)
+        }
     }
 
     /**
-     * Release current execute thread
+     * release if with exception
      */
-    fun release() {
+    fun release(e: Exception? = null) {
+        this.handlerException = e
         mainLatch.countDown()
     }
+
+    /**
+     * current execute context is active
+     */
+    fun isActive() = this.handlerException == null
 
     /**
      * Init join node locks

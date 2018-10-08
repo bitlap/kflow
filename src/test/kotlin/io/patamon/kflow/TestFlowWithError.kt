@@ -20,21 +20,21 @@ class TestFlowWithError {
 
             "node1" {
                 handler { flowData ->
-                    flowData["node1"] = "node1Data"
-                    // error
-                    // 1 / 0
-                    println("${Thread.currentThread().name} -> node1 handle, get init data ${flowData["initData"]}")
+                    // throw error
+                    if (flowData["error"] as Boolean) 1 / 0
+
+                    println("${Thread.currentThread().name} -> node1 handle")
                 }
             }
 
             "node2" {
-                handler { flowData ->
-                    println("${Thread.currentThread().name} -> node2 handle, get node1 data ${flowData["node1"]}")
+                handler {
+                    println("${Thread.currentThread().name} -> node2 handle")
                 }
             }
         }
-        // flow.execute()
-        flow.execute(mutableMapOf("initData" to "initData"))
+        flow.execute(mutableMapOf("error" to true))
+        // flow.execute(mutableMapOf("error" to false))
     }
 
     /**
@@ -70,7 +70,7 @@ class TestFlowWithError {
 
             "node2" {
                 handler {
-                    Thread.sleep(1000)
+                    Thread.sleep(2000)
                     println("${Thread.currentThread().name} -> node2 handle")
                 }
             }
@@ -83,6 +83,8 @@ class TestFlowWithError {
 
             "f_node" {
                 handler {
+                    // error
+                    1 / 0
                     println("${Thread.currentThread().name} -> f_node handle")
                 }
             }

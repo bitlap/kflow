@@ -34,6 +34,7 @@ class TaskNode(
         }
 
         // 3. execute next nodes
+        // TODO: if size is one, execute in current thread?
         nextNodes.forEach {
             if (it.prev().moreThanOne()) {
                 context.initJoinLocks(it, it.name, it.prev().size)
