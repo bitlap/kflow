@@ -1,11 +1,13 @@
 package io.patamon.kflow.node
 
+import io.patamon.kflow.core.ExecuteContext
 import io.patamon.kflow.node.NodeType.FORK
 import io.patamon.kflow.node.NodeType.FORK_JOIN
 import io.patamon.kflow.node.NodeType.JOIN
 import io.patamon.kflow.node.WalkStatus.INIT
 import io.patamon.kflow.node.WalkStatus.VISITED
 import kotlinx.coroutines.experimental.GlobalScope
+import kotlinx.coroutines.experimental.cancelChildren
 import kotlinx.coroutines.experimental.launch
 
 /**
@@ -75,10 +77,14 @@ abstract class BaseNode : Node {
         return false
     }
 
-    protected fun executeAsync(func: () -> Unit) {
+    protected fun executeAsync(context: ExecuteContext, node: Node) {
         GlobalScope.launch {
-            func.invoke()
+            val result = node.execute(context)
+            if (result.hasError()) {
+                this.coroutineContext.cancelChildren(result.exception)
+            }
         }
+
     }
 }
 

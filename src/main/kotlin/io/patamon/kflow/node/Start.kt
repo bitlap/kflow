@@ -1,6 +1,7 @@
 package io.patamon.kflow.node
 
 import io.patamon.kflow.core.ExecuteContext
+import io.patamon.kflow.core.ExecuteResult
 import io.patamon.kflow.core.KFlowException
 import io.patamon.kflow.node.NodeType.START
 import io.patamon.kflow.utils.moreThanOne
@@ -27,15 +28,16 @@ class Start(
         throw KFlowException("start node should not have prev node of [${node.name}].")
     }
 
-    override fun execute(context: ExecuteContext) {
+    override fun execute(context: ExecuteContext): ExecuteResult {
         nextNodes.forEach {
             if (it.prev().moreThanOne()) {
-                context.initJoinLocks(this, it.name, it.prev().size)
+                context.initJoinLocks(it, it.name, it.prev().size)
             }
-            executeAsync {
-                it.execute(context)
-            }
+            // execute node
+            executeAsync(context, it)
         }
+        // return ok
+        return ExecuteResult.OK
     }
 
 }

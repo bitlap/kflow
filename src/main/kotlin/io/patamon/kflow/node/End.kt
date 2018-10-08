@@ -1,6 +1,7 @@
 package io.patamon.kflow.node
 
 import io.patamon.kflow.core.ExecuteContext
+import io.patamon.kflow.core.ExecuteResult
 import io.patamon.kflow.core.KFlowException
 import io.patamon.kflow.node.NodeType.END
 
@@ -26,14 +27,17 @@ class End(
         this.prevNodes.add(node)
     }
 
-    override fun execute(context: ExecuteContext) {
+    override fun execute(context: ExecuteContext): ExecuteResult {
         // 1. check current join nodes
         if (context.countDownJoinLocks(name)) {
-            return
+            return ExecuteResult.IGNORE
         }
 
         // 2. release main thread
         context.release()
+
+        // return ok
+        return ExecuteResult.OK
     }
 
 }

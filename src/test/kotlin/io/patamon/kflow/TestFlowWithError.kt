@@ -1,12 +1,12 @@
 package io.patamon.kflow
 
-import io.patamon.kflow.core.KFlowException
 import org.junit.Test
 
 /**
  * Test simple flow
  */
-class TestFlow {
+@Suppress("DIVISION_BY_ZERO")
+class TestFlowWithError {
 
     /**
      * start ---> node1 ---> node2 ---> end
@@ -21,6 +21,8 @@ class TestFlow {
             "node1" {
                 handler { flowData ->
                     flowData["node1"] = "node1Data"
+                    // error
+                    // 1 / 0
                     println("${Thread.currentThread().name} -> node1 handle, get init data ${flowData["initData"]}")
                 }
             }
@@ -33,28 +35,6 @@ class TestFlow {
         }
         // flow.execute()
         flow.execute(mutableMapOf("initData" to "initData"))
-    }
-
-    /**
-     * start ---> node1 ---> end
-     *   |___________________↑
-     */
-    @Test
-    fun testSimpleFlow2() {
-        val flow = flow {
-            start to "node1"
-            "node1" to end
-
-            start to end
-
-            "node1" {
-                handler {
-                    Thread.sleep(1000)
-                    println("${Thread.currentThread().name} -> node1 handle")
-                }
-            }
-        }
-        flow.execute()
     }
 
     /**
@@ -126,54 +106,6 @@ class TestFlow {
             }
         }
         flow.execute()
-    }
-
-    /**
-     * check `relationship already exists` exception
-     */
-    @Test(expected = KFlowException::class)
-    fun testLineRelationExistsException() {
-        flow {
-            start to "node1"
-            start to "node1" // Repetition relation
-            "node1" to end
-        }
-    }
-
-    /**
-     * check start has prev exception
-     */
-    @Test(expected = KFlowException::class)
-    fun testStartHasPrevException() {
-        flow {
-            "node1" to start
-        }
-    }
-
-    /**
-     * check end has next exception
-     */
-    @Test(expected = KFlowException::class)
-    fun testEndHasNexException() {
-        flow {
-            end to "node1"
-        }
-    }
-
-    /**
-     * check none prev and none next
-     */
-    @Test(expected = KFlowException::class)
-    fun testNonePrevException() {
-        flow {
-            "node1" to end
-        }
-    }
-    @Test(expected = KFlowException::class)
-    fun testNoneNextException() {
-        flow {
-            start to "node1"
-        }
     }
 
 }

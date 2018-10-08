@@ -1,6 +1,7 @@
 package io.patamon.kflow.node
 
 import io.patamon.kflow.core.ExecuteContext
+import io.patamon.kflow.core.ExecuteResult
 
 /**
  * Node in one flow
@@ -37,7 +38,7 @@ interface Node {
     /**
      * execute current node
      */
-    fun execute(context: ExecuteContext)
+    fun execute(context: ExecuteContext): ExecuteResult
 
     /**
      * check whether one node (and next nodes) have cycle

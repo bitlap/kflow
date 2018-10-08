@@ -1,6 +1,7 @@
 package io.patamon.kflow.node
 
 import io.patamon.kflow.core.ExecuteContext
+import io.patamon.kflow.core.ExecuteResult
 import io.patamon.kflow.core.NodeContext
 import io.patamon.kflow.node.NodeType.TASK
 import io.patamon.kflow.utils.moreThanOne
@@ -18,23 +19,31 @@ class TaskNode(
         fun empty(name: String) = TaskNode(name, NodeContext())
     }
 
-    override fun execute(context: ExecuteContext) {
+    override fun execute(context: ExecuteContext): ExecuteResult {
         // 1. check current join nodes
         if (context.countDownJoinLocks(name)) {
-            return
+            return ExecuteResult.IGNORE
         }
+
         // 2. execute node
-        nodeContext.handler.invoke(context.flowData)
+        try {
+            nodeContext.handler.invoke(context.flowData)
+        } catch (e: Exception) {
+            // return error
+            return ExecuteResult.withError(e)
+        }
 
         // 3. execute next nodes
         nextNodes.forEach {
             if (it.prev().moreThanOne()) {
-                context.initJoinLocks(this, it.name, it.prev().size)
+                context.initJoinLocks(it, it.name, it.prev().size)
             }
-            executeAsync {
-                it.execute(context)
-            }
+            // execute node
+            executeAsync(context, it)
         }
+
+        // return ok
+        return ExecuteResult.OK
     }
 
 }

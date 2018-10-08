@@ -8,7 +8,8 @@ import java.util.concurrent.atomic.AtomicInteger
  * When one flow is executing, the only [ExecuteContext] will be through the whole process.
  */
 class ExecuteContext(
-        flowData: Map<String, Any?> = mutableMapOf()
+        flowData: Map<String, Any?> = mutableMapOf(),
+        private val mainThread: Thread = Thread.currentThread()
 ) {
 
     private val mainLatch = CountDownLatch(1)
