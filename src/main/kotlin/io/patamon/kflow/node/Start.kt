@@ -4,7 +4,6 @@ import io.patamon.kflow.core.ExecuteContext
 import io.patamon.kflow.core.ExecuteResult
 import io.patamon.kflow.core.KFlowException
 import io.patamon.kflow.node.NodeType.START
-import io.patamon.kflow.utils.moreThanOne
 
 /**
  * Built-in start node
@@ -29,13 +28,9 @@ class Start(
     }
 
     override fun execute(context: ExecuteContext): ExecuteResult {
-        nextNodes.forEach {
-            if (it.prev().moreThanOne()) {
-                context.initJoinLocks(it, it.name, it.prev().size)
-            }
-            // execute node
-            executeAsync(context, it)
-        }
+        // execute next nodes
+        executeNextNodes(context)
+
         // return ok
         return ExecuteResult.OK
     }

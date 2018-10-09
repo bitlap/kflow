@@ -133,4 +133,5 @@ class TestCheckCycle {
             "node1" to end
             end to start
         }
-    }}
+    }
+}

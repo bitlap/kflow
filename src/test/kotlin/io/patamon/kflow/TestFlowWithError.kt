@@ -109,7 +109,9 @@ class TestFlowWithError {
                 }
             }
         }
+
         try {
+            // TODO: interrupt node2
             flow.execute(mutableMapOf("error" to true))
         } catch (e: Exception) {
             // ignore

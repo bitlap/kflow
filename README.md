@@ -48,4 +48,5 @@ You can reference to test cases.
 ## 2. TODO
 
 * [ ] `Execute context` other build-in features.
+* [ ] Interrupt waiting/sleeping threads when throwing exception.
 * [ ] TODO

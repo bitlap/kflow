@@ -4,8 +4,10 @@ import io.patamon.kflow.core.ExecuteContext
 import io.patamon.kflow.node.NodeType.FORK
 import io.patamon.kflow.node.NodeType.FORK_JOIN
 import io.patamon.kflow.node.NodeType.JOIN
+import io.patamon.kflow.node.NodeType.START
 import io.patamon.kflow.node.WalkStatus.INIT
 import io.patamon.kflow.node.WalkStatus.VISITED
+import io.patamon.kflow.utils.moreThanOne
 import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.isActive
 import kotlinx.coroutines.experimental.launch
@@ -77,14 +79,43 @@ abstract class BaseNode : Node {
         return false
     }
 
-    protected fun executeAsync(context: ExecuteContext, node: Node) {
-        GlobalScope.launch {
-            if (isActive && context.isActive()) {
+    /**
+     * execute next nodes
+     */
+    protected fun executeNextNodes(context: ExecuteContext) {
+        this.nextNodes.forEach {
+            if (it.prev().moreThanOne()) {
+                context.initJoinLocks(it, it.name, it.prev().size)
+            }
+            // execute node
+            // if next nodes size is 1, execute synchronously
+            executeNode(context, it, this.nextNodes.size != 1 || this.type == START)
+        }
+    }
+
+    // execute node
+    private fun executeNode(context: ExecuteContext, node: Node, async: Boolean) {
+        // execute function
+        val exec = {
+            if (context.isActive()) {
                 val result = node.execute(context)
                 if (result.hasError()) {
                     context.release(result.exception!!)
                 }
             }
+        }
+
+        // asynchronously
+        if (async) {
+            GlobalScope.launch {
+                if (isActive) {
+                    exec()
+                }
+            }
+        }
+        // synchronously
+        else {
+            exec()
         }
     }
 }

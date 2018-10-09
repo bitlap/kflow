@@ -46,7 +46,10 @@ open class FlowContext {
         // check `none prev` and `none next`
         nodeMap.values.forEach {
             when {
-                it.type == START || it.type == END -> Unit
+                // [start] and [end] node check
+                it.type == START -> if (it.next().isEmpty()) throw KFlowException("[${it.name}] must have next nodes.")
+                it.type == END -> if (it.prev().isEmpty()) throw KFlowException("[${it.name}] must have prev nodes.")
+                // [task] node check
                 it.prev().isEmpty() -> throw KFlowException("[${it.name}] must have prev nodes.")
                 it.next().isEmpty() -> throw KFlowException("[${it.name}] must have next nodes.")
             }

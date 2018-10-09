@@ -4,7 +4,6 @@ import io.patamon.kflow.core.ExecuteContext
 import io.patamon.kflow.core.ExecuteResult
 import io.patamon.kflow.core.NodeContext
 import io.patamon.kflow.node.NodeType.TASK
-import io.patamon.kflow.utils.moreThanOne
 
 /**
  * Task node defined by user
@@ -34,14 +33,7 @@ class TaskNode(
         }
 
         // 3. execute next nodes
-        // TODO: if size is one, execute in current thread?
-        nextNodes.forEach {
-            if (it.prev().moreThanOne()) {
-                context.initJoinLocks(it, it.name, it.prev().size)
-            }
-            // execute node
-            executeAsync(context, it)
-        }
+        executeNextNodes(context)
 
         // return ok
         return ExecuteResult.OK
