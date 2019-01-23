@@ -10,9 +10,7 @@ Kotlin DSL for DAG-Flow execute engine.
 // start ---> node1 ---> node2 ---> end
 val flow = flow {
     // flow lines
-    start to "node1"
-    "node1" to "node2"
-    "node2" to end
+    start to "node1" to "node2" to end
 
     // node handler
     "node1" {
