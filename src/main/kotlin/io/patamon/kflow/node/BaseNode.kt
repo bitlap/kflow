@@ -152,7 +152,7 @@ enum class NodeType {
     /**
      * TASK node with multiple prev nodes, multiple next nodes
      */
-    FORK_JOIN
+    FORK_JOIN,
 }
 
 /**
@@ -178,5 +178,5 @@ enum class WalkStatus {
     /**
      * Current node has been visited
      */
-    VISITED
+    VISITED,
 }

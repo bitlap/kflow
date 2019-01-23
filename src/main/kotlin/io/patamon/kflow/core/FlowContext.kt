@@ -77,31 +77,30 @@ open class FlowContext {
 
     /**
      * add line relationship
+     *
+     * @return return target node name
      */
-    private fun addLinePair(pair: Pair<String, String>) {
+    private fun addLinePair(pair: Pair<String, String>): String {
         if (lines.contains(pair)) {
             throw KFlowException("[${pair.first}] to [${pair.second}] relationship already exists.")
         }
         lines.add(pair)
+        return pair.second
     }
 
 
     // =============================== Enhance function ============================== //
-    infix fun Node.to(node: String) {
-        addLinePair(Pair(this.name, node))
-    }
+    infix fun Node.to(node: String)
+        = addLinePair(Pair(this.name, node))
 
-    infix fun String.to(node: Node) {
-        addLinePair(Pair(this, node.name))
-    }
+    infix fun String.to(node: Node)
+        = addLinePair(Pair(this, node.name))
 
-    infix fun String.to(node: String) {
-        addLinePair(Pair(this, node))
-    }
+    infix fun String.to(node: String)
+        = addLinePair(Pair(this, node))
 
-    infix fun Node.to(node: Node) {
-        addLinePair(Pair(this.name, node.name))
-    }
+    infix fun Node.to(node: Node)
+        = addLinePair(Pair(this.name, node.name))
 
     operator fun String.invoke(init: NodeContext.() -> Unit): Node {
         return nodeMap.add(this, TaskNode(this, NodeContext().apply(init)))

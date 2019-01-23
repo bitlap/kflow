@@ -36,6 +36,31 @@ class TestFlow {
     }
 
     /**
+     * start ---> node1 ---> node2 ---> end
+     */
+    @Test
+    fun testSimpleFlowLine() {
+        val flow = flow {
+            start to "node1" to "node2" to end
+
+            "node1" {
+                handler { flowData ->
+                    flowData["node1"] = "node1Data"
+                    println("${Thread.currentThread().name} -> node1 handle, get init data ${flowData["initData"]}")
+                }
+            }
+
+            "node2" {
+                handler { flowData ->
+                    println("${Thread.currentThread().name} -> node2 handle, get node1 data ${flowData["node1"]}")
+                }
+            }
+        }
+        // flow.execute()
+        flow.execute(mutableMapOf("initData" to "initData"))
+    }
+
+    /**
      * start ---> node1 ---> end
      *   |___________________↑
      */
