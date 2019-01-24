@@ -3,6 +3,7 @@ package io.patamon.kflow.node
 import io.patamon.kflow.core.ExecuteContext
 import io.patamon.kflow.core.ExecuteResult
 import io.patamon.kflow.core.KFlowException
+import io.patamon.kflow.core.NodeContext
 import io.patamon.kflow.node.NodeType.END
 
 /**
@@ -10,6 +11,7 @@ import io.patamon.kflow.node.NodeType.END
  */
 class End(
         override val name: String = "__END__",
+        internal var nodeContext: NodeContext = NodeContext(),
         override var type: NodeType = END
 ) : BaseNode() {
 
@@ -35,6 +37,9 @@ class End(
 
         // 2. release main thread
         context.release()
+
+        // 3. execute end
+        this.nodeContext.handler.invoke(context.flowData)
 
         // return ok
         return ExecuteResult.OK

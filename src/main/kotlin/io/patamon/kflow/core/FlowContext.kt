@@ -106,4 +106,12 @@ open class FlowContext {
         return nodeMap.add(this, TaskNode(this, NodeContext().apply(init)))
     }
 
+    operator fun Start.invoke(init: NodeContext.() -> Unit) {
+        this@FlowContext.start.nodeContext = NodeContext().apply(init)
+    }
+
+    operator fun End.invoke(init: NodeContext.() -> Unit) {
+        this@FlowContext.end.nodeContext = NodeContext().apply(init)
+    }
+
 }

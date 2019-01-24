@@ -43,6 +43,12 @@ class TestFlow {
         val flow = flow {
             start to "node1" to "node2" to end
 
+            start {
+                handler {
+                    println("execute start")
+                }
+            }
+
             "node1" {
                 handler { flowData ->
                     flowData["node1"] = "node1Data"
@@ -53,6 +59,12 @@ class TestFlow {
             "node2" {
                 handler { flowData ->
                     println("${Thread.currentThread().name} -> node2 handle, get node1 data ${flowData["node1"]}")
+                }
+            }
+
+            end {
+                handler {
+                    println("execute end")
                 }
             }
         }

@@ -3,6 +3,7 @@ package io.patamon.kflow.node
 import io.patamon.kflow.core.ExecuteContext
 import io.patamon.kflow.core.ExecuteResult
 import io.patamon.kflow.core.KFlowException
+import io.patamon.kflow.core.NodeContext
 import io.patamon.kflow.node.NodeType.START
 
 /**
@@ -10,6 +11,7 @@ import io.patamon.kflow.node.NodeType.START
  */
 class Start(
         override val name: String = "__START__",
+        internal var nodeContext: NodeContext = NodeContext(),
         override var type: NodeType = START
 ) : BaseNode() {
 
@@ -28,7 +30,10 @@ class Start(
     }
 
     override fun execute(context: ExecuteContext): ExecuteResult {
-        // execute next nodes
+        // 1. execute start
+        this.nodeContext.handler.invoke(context.flowData)
+
+        // 2. execute next nodes
         executeNextNodes(context)
 
         // return ok
